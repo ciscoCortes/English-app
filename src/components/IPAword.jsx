@@ -17,23 +17,20 @@ import words from '../phonetic_aids.json'
 // }
 
 
-const IPAword = ({ word = '',
-    // phonetic_aids, 
-    // aids_map, 
-    shoInfo, className = '' }) => {
+const IPAword = ({ word = '', phonetic_aids, aids_map, shoInfo = true, className = '' }) => {
 
-    const entry = word.toLocaleLowerCase()
-    let phonetic_aids = []
-    let aids_map = []
-    if (words[entry]) {
-        phonetic_aids = [...words[entry].phDict]
-        aids_map = [...words[entry].map]
+    if (!phonetic_aids) {
+        const entry = word.toLocaleLowerCase()
+        if (words[entry]) {
+            phonetic_aids = [...words[entry].phDict]
+            aids_map = [...words[entry].map]
+        }
     }
 
     return (
-        <div className="inline-block -mb-1 font-bold">
+        <div className="inline-block font-bolod">
             {phonetic_aids &&
-                <sub className="flex justify-between">
+                <sub className="flex justify-between -mb-0.5">
                     {phonetic_aids.map((e, i) => {
                         switch (aids_map[i]) {
                             case 1:
@@ -65,10 +62,9 @@ const IPAword = ({ word = '',
                     }
                 </sub>}
             <button
-                className={`px-0.5 font-light ${className}`}
                 onClick={() => shoInfo && showWordInfo()} >
                 {word}</button>
-        </div >
+        </div>
     )
     function showWordInfo() {
         console.log(word);

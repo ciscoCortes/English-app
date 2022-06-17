@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import IPAword from "./components/IPAword";
+
+import Dict from "./pages/dict";
+import Rich_text from "./pages/Rich_text";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Rich_text />} />
+        <Route path="/ipaword" element={<IPAword shoInfo={true} word="elephant" phonetic_aids={[
+          "ɛ",
+          "l",
+          "ə",
+          "f",
+          "h",
+          "ə",
+          "n"
+        ]
+        } aids_map={[
+          3,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0
+        ]
+        } />} />
+        <Route path="/dict" element={<Dict />} />
+      </Routes>
+    </Router>
   );
 }
-
 export default App;

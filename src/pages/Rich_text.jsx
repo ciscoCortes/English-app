@@ -3,34 +3,72 @@ import React, { useState } from "react";
 import ownDict from "../ownDict.json"
 import Hyper_text from "../components/Hyper_text"
 
-
-const level_words = ['word', 'this', 'also']
+const level_words = ['go', 'this']
 
 const Text_book = ({ set_promp, set_promp_color }) => {
+  const editText = true
   const [paragraphs, set_paras] = useState([]);
+  const style = 'absolute p-5 m-1 overflow-y-auto border rounded shadow-sm outline-none h-ful'
   return (
     <>
       <div
-        className="p-5 m-1 overflow-y-auto border rounded shadow-sm outline-none h-ful shadow-stone-400"
+        className={`${style} text-red-400 caret-neutral-800`}
         contentEditable="true"
         onInput={(e) => get_paragraphs(e, set_paras)} >
       </div>
-      <div className="p-5 m-1 overflow-y-auto border rounded shadow-sm outline-none h-ful shadow-stone-400">
+      <div
+        className={`${style} ${editText && 'pointer-events-none'}  shadow-stone-400`}>
         <Hyper_text paragraphs={paragraphs} />
       </div>
     </>
   )
 
   function get_paragraphs(e, set_paras) {
-    const paragraphs = e.target.innerHTML
-      .replace(/<br>|<div>/gi, '')
-      .replace(/ /gi, '~')
-      .replace(/&nbsp;/gi, ' ')
-      .split('</div>')
-      .filter(element => element != [""])
-      .map(element => element.split("~"))
-    set_paras(paragraphs)
+    let ignore = true
+    let last = 'any string'
+    const paragraphs = e.target.innerText
+      .split(/\r?\n/)
+      .filter(p => {
+        if (last === '') {
+          last = p
+          if (p === '') {
+            if (ignore) {
+              ignore = !ignore
+              return false
+            }
+            ignore = !ignore
+            return true
+          }
+          ignore = true
+          return true
+        }
+        last = p
+        return true
+      })
+      .map(p => {
+        if (p === '') {
+          return [p]
+        }
+        const arr = []
+        let word = ''
+        for (let i = 0; i < p.length; i++) {
+          if (p[i].match(/\W/)) {
+            if (word) {
+              arr.push(word)
+              word = ''
+            }
+            arr.push(p[i])
+          }
+          else {
+            word = word + p[i]
+          }
+        }
+        word && arr.push(word)
+        return arr
+      })
+
     give_last_word(paragraphs)
+    set_paras(paragraphs)
   }
 
   function give_last_word(paragraphs) {
@@ -145,9 +183,9 @@ const Rich_text = () => {
       <footer className="flex items-center py-6 text-xl bg-stone-400 justify-evenly">
         <Word_classes />
       </footer>
-    </div>
-  );
-};
+    </div >
+  )
+}
 
 
 export default Rich_text;
