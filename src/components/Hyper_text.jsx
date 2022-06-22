@@ -2,24 +2,21 @@ import IPAword from "./IPAword";
 
 const Hyper_text = ({ paragraphs = [] }) => {
 
-    let space = '9'
-
     return (
         <>
             {paragraphs.map((p, i) => {
                 return (
                     <div key={i}>
                         {p.reduce((acc, word, i) => {
-                            if (word.match(/\s/)) {
+                            word.match(/\W/) ?
                                 acc.push(word)
-                            }
-                            else {
-                                acc.push(<IPAword key={i} word={word} />)
-                            }
+                                :
+                                word ?
+                                    acc.push(<IPAword key={i} word={word} />)
+                                    :
+                                    acc.push(<br key={i} />)
                             return acc
-                        }, [])
-
-                        }
+                        }, [])}
                     </div>
                 );
             })}

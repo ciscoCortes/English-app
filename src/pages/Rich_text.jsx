@@ -5,66 +5,91 @@ import Hyper_text from "../components/Hyper_text"
 
 const level_words = ['go', 'this']
 
-const Text_book = ({ set_promp, set_promp_color }) => {
-  const editText = true
+
+const text = `
+I think that the planet of
+
+I think that the planet of the little prince is Asteroid B-612.
+In 1909, one astronomer discovers this asteroid. The astronomer is from Turkey.
+He speaks about his asteroid at a big conference. But nobody believes him because he has Turkish clothes. It is crazy but people do these things.
+
+But there is something good for Asteroid B-612. A Turkish leader says that people in Turkey must have clothes like Europeans. The astronomer speaks about his asteroid again in 1920. He has very nice clothes. And now everybody believes him.
+
+I speak about Asteroid B-612 and I speak about its number because people like numbers. When you tell people that you have a new friend, they never ask you questions about important things. They never ask you, “Is his voice nice? What games does he play? Does he have butterflies at home?”
+
+They ask, “How old is he? How many brothers does he have? How big is he? How much money does his father have?” If they know these numbers, they think that they know this person.
+
+If you say to the people, “I know a small red house. It has beautiful flowers in the windows. A lot of birds fly around the house,” the people can’t imagine the house. You must say to the people, “I know a big house. It is very expensive. You can buy this house for one hundred thousand dollars.” Then the people say, “It is a nice house.”
+
+If you say to the people, “The little prince exists because he laughs and he wants a sheep,” this information is not enough for the adults. They don’t believe you. They think that you live in a dream. But if you tell them, “The planet of the little prince is Asteroid B-612,” they believe you. This is how the people think.
+
+If you understand life, you don’t need numbers. You need to hear a nice story. You like to hear, “The little prince lives on a small planet. The planet is very small. The little prince is alone. He wants to have a friend.” If you understand life, this is what you want to hear.
+`
+
+
+const Text_book = ({ set_promp, set_promp_color, editText = true }) => {
   const [paragraphs, set_paras] = useState([]);
-  const style = 'absolute p-5 m-1 overflow-y-auto border rounded shadow-sm outline-none h-ful'
+  const [_default, set_default] = useState('Start writing')
+  const style = 'overflow-y-auto  outline-none p-5 w-full '
   return (
-    <>
+    <div className="relative">
       <div
-        className={`${style} text-red-400 caret-neutral-800`}
+        className={`${style} text-transparent caret-neutral-800 font-light whitespace-pre-line absolute `}
         contentEditable="true"
-        onInput={(e) => get_paragraphs(e, set_paras)} >
+        onInput={(evt) => get_paragraphs(evt, set_paras)} >
+        {/* {_default} */}
+        {text}
+        {/* <div>
+          <br />
+        </div> */}
       </div>
       <div
-        className={`${style} ${editText && 'pointer-events-none'}  shadow-stone-400`}>
+        className={`${style} ${editText && 'pointer-events-none'} border rounded shadow-sm absolute shadow-stone-400`}>
         <Hyper_text paragraphs={paragraphs} />
       </div>
-    </>
+    </div>
   )
 
-  function get_paragraphs(e, set_paras) {
-    let ignore = true
+  function get_paragraphs(evt, set_paras) {
+    // if (evt.nativeEvent.inputType == 'insertFromPaste') {
+    //   set_default(evt.target.innerText)
+    // }
+    let include = true
     let last = 'any string'
-    const paragraphs = e.target.innerText
+    const paragraphs = evt.target.innerText
       .split(/\r?\n/)
-      .filter(p => {
+      .filter(p => {  //removing some extra blanck paragraphs.
         if (last === '') {
-          last = p
           if (p === '') {
-            if (ignore) {
-              ignore = !ignore
-              return false
-            }
-            ignore = !ignore
-            return true
+            include = !include
+            return include
           }
-          ignore = true
-          return true
+          last = p
+          include = true
         }
         last = p
         return true
       })
-      .map(p => {
+      .map(p => {   //split words an spaces
         if (p === '') {
-          return [p]
+          return ['']
         }
-        const arr = []
+        const new_arr = []
         let word = ''
         for (let i = 0; i < p.length; i++) {
           if (p[i].match(/\W/)) {
             if (word) {
-              arr.push(word)
+              new_arr.push(word)
               word = ''
             }
-            arr.push(p[i])
+            new_arr.push(p[i])
           }
           else {
             word = word + p[i]
           }
         }
-        word && arr.push(word)
-        return arr
+        word && new_arr.push(word)
+        return new_arr
       })
 
     give_last_word(paragraphs)
@@ -156,7 +181,7 @@ const Rich_text = () => {
   }
 
   return (
-    <div className="flex flex-col justify-between w-full h-screen">
+    <div className="flex flex-col justify-between w-full min-h-screen">
       <main className="flex flex-col p-5 px-10 grow">
         <h2 className="text-center capitalize">
           Write what you want
@@ -166,17 +191,17 @@ const Rich_text = () => {
             {promp}
           </span>
           <section className="flex flex-col grow">
-            <div className="grid grid-cols-2 grow" >
+            <div className="w-full grow" >
               <Text_book set_promp={set_promp} set_promp_color={set_promp_color} />
             </div>
-            <div className="flex mt-2 h-60">
+            {/* <div className="flex mt-2 h-60">
               <div className="w-2/3 px-3 overflow-y-auto border">
                 <Allowed_words />
               </div>
               <div className="grid items-start w-1/3 grid-cols-4 grid-rows-4 p-5 overflow-y-auto border">
                 <Fresh_list />
               </div>
-            </div>
+            </div> */}
           </section>
         </div>
       </main>
