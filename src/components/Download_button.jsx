@@ -1,4 +1,3 @@
-import React from 'react'
 
 const Download_button = ({ children, file, file_name = 'new_file.js', content_type = 'text/plain' }) => {
     return (

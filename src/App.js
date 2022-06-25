@@ -1,17 +1,23 @@
 
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Devwlop from "./pages/develop"
-import Dict from "./pages/dict";
-import Rich_text from "./pages/Rich_text";
+import Develop from "./components/develop"
+import Teacher_deck from "./pages/Teacher_deck/Teacher_deck";
+import Text_library from "./pages/text_library";
+import Phonetic_aids_editor from "./pages/Teacher_deck/Ponetic_aids_editor";
+import Rich_text from "./pages/Teacher_deck/Rich_text";
 
 function App() {
+  const words = ['this', 'that']
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Rich_text />} />
-        <Route path="/dict" element={<Dict />} />
-        <Route path="/develop" element={<Devwlop />} />
+        <Route path="/" element={<Develop />} />
+        <Route path="/Teacher_deck" element={<Teacher_deck />} >
+          <Route path="editor" element={<Phonetic_aids_editor words={words} />} />
+          <Route path="deck" element={<Rich_text />} />
+        </Route>
+        <Route path="/library" element={<Text_library />} />
       </Routes>
     </Router>
   );
